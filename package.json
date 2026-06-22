@@ -27,6 +27,6 @@
     "@azure/static-web-apps-cli": "^2.0.0",
     "azure-functions-core-tools": "^4.0.0",
     "prisma": "^6.2.0",
-    "tsx": "^4.19.0"
+    "tsx": "^4.22.4"
   }
 }
