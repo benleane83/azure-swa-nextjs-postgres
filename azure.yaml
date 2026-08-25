@@ -13,10 +13,11 @@ hooks:
     windows:
       shell: pwsh
       run: |
+        npm ci
         npm run db:generate
 
-        cd src/web && npm install && npm run build
-        cd ../api && npm install && npm run build
+        cd src/web && npm ci && npm run build
+        cd ../api && npm ci && npm run build
         cd ../..
         node scripts/sync-prisma-client.mjs
         node scripts/slim-swa-api-package.mjs
@@ -25,10 +26,11 @@ hooks:
     posix:
       shell: sh
       run: |
+        npm ci
         npm run db:generate
 
-        cd src/web && npm install && npm run build
-        cd ../api && npm install && npm run build
+        cd src/web && npm ci && npm run build
+        cd ../api && npm ci && npm run build
         cd ../..
         node scripts/sync-prisma-client.mjs
         node scripts/slim-swa-api-package.mjs
