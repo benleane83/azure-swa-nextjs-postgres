@@ -3,17 +3,9 @@ $ErrorActionPreference = "Stop"
 Push-Location (Split-Path -Parent $MyInvocation.MyCommand.Path)
 Set-Location ..
 . (Join-Path (Get-Location) "scripts/load-azd-env.ps1")
+. (Join-Path (Get-Location) "scripts/load-database-url.ps1")
 
 Write-Host "🌱 Seeding Azure database..."
-
-# Prefer DATABASE_URL if already set, otherwise retrieve from Key Vault.
-if (-not $env:DATABASE_URL) {
-  Write-Host "Retrieving DATABASE_URL from Key Vault..."
-  $env:DATABASE_URL = az keyvault secret show `
-    --vault-name $env:AZURE_KEY_VAULT_NAME `
-    --name "DATABASE-URL" `
-    --query value -o tsv
-}
 
 # Open temporary firewall rule for local machine
 $myIp = (Invoke-RestMethod -Uri "https://api.ipify.org")

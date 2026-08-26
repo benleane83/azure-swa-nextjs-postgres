@@ -10,9 +10,6 @@ param tags object = {}
 @description('Principal ID to grant Key Vault Secrets User role (SWA managed identity)')
 param principalId string
 
-@description('Principal ID of the deployer to grant Key Vault Secrets User role for migrations')
-param deployerPrincipalId string
-
 @secure()
 @description('PostgreSQL connection string to store as a secret')
 param databaseUrl string
@@ -30,6 +27,11 @@ resource keyVault 'Microsoft.KeyVault/vaults@2023-07-01' = {
     enableRbacAuthorization: true
     enableSoftDelete: true
     softDeleteRetentionInDays: 7
+    publicNetworkAccess: 'Disabled'
+    networkAcls: {
+      bypass: 'None'
+      defaultAction: 'Deny'
+    }
   }
 }
 
@@ -50,17 +52,6 @@ resource keyVaultSecretUserRole 'Microsoft.Authorization/roleAssignments@2022-04
     principalId: principalId
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
     principalType: 'ServicePrincipal'
-  }
-}
-
-// Grant the deployer "Key Vault Secrets User" role so postprovision migration scripts can read the secret
-resource deployerKeyVaultSecretUserRole 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  scope: keyVault
-  name: guid(keyVault.id, deployerPrincipalId, '4633458b-17de-408a-b874-0445c86b69e6')
-  properties: {
-    principalId: deployerPrincipalId
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
-    principalType: 'User'
   }
 }
 

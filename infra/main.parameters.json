@@ -10,9 +10,6 @@
     },
     "dbAdminPassword": {
       "value": "${AZURE_DB_ADMIN_PASSWORD}"
-    },
-    "deployerPrincipalId": {
-      "value": "${AZURE_PRINCIPAL_ID}"
     }
   }
 }

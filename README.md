@@ -5,7 +5,7 @@ Built with [create-azure-app](https://github.com/benleane83/create-azure-app) â€
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) 20+
-- [Azure Developer CLI (azd)](https://aka.ms/azd)
+- [Azure Developer CLI (azd)](https://aka.ms/azd) 1.26.0 or later
 - [Docker](https://www.docker.com/) (optional, only required when DB is included)
 - [GitHub CLI (gh)](https://cli.github.com/) (optional, for CI/CD setup)
 
@@ -27,6 +27,13 @@ npm run dev
 ## Deploy to Azure
 
 ### First-time setup
+
+`azd up` generates a strong PostgreSQL administrator password on the first run
+and stores it in the local, gitignored azd environment under
+`AZURE_DB_ADMIN_PASSWORD`. Later runs reuse that password. The postprovision
+hook constructs `DATABASE_URL` in memory, opens a temporary PostgreSQL firewall
+rule for the current public IP, applies Prisma migrations, and removes the rule.
+Key Vault remains private-only throughout the deployment.
 
 ```bash
 # 1. Provision Azure infrastructure (SWA, PostgreSQL, Key Vault, etc.)

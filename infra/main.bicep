@@ -16,9 +16,6 @@ param dbAdminLogin string = 'pgadmin'
 @description('PostgreSQL administrator password')
 param dbAdminPassword string
 
-@description('Principal ID of the deployer (used to grant Key Vault access for migrations)')
-param deployerPrincipalId string = ''
-
 var tags = {
   'azd-env-name': environmentName
 }
@@ -76,8 +73,7 @@ module keyvault 'modules/keyvault.bicep' = {
     location: location
     tags: tags
     principalId: swa.outputs.principalId
-    deployerPrincipalId: deployerPrincipalId
-    databaseUrl: 'postgresql://${dbAdminLogin}:${dbAdminPassword}@${postgres.outputs.fqdn}:5432/${postgres.outputs.databaseName}?sslmode=require'
+    databaseUrl: 'postgresql://${dbAdminLogin}:${uriComponent(dbAdminPassword)}@${postgres.outputs.fqdn}:5432/${postgres.outputs.databaseName}?sslmode=require'
   }
 }
 
@@ -88,7 +84,7 @@ module swaAppSettings 'modules/swa-appsettings.bicep' = {
   params: {
     swaName: swa.outputs.name
     appInsightsConnectionString: monitoring.outputs.connectionString
-    databaseUrl: 'postgresql://${dbAdminLogin}:${dbAdminPassword}@${postgres.outputs.fqdn}:5432/${postgres.outputs.databaseName}?sslmode=require'
+    databaseUrl: 'postgresql://${dbAdminLogin}:${uriComponent(dbAdminPassword)}@${postgres.outputs.fqdn}:5432/${postgres.outputs.databaseName}?sslmode=require'
   }
 }
 

@@ -1,6 +1,8 @@
 name: azure-swa-nextjs-postgres
 metadata:
   template: create-azure-app
+requiredVersions:
+  azd: ">= 1.26.0"
 services:
   web:
     project: src/web
@@ -9,6 +11,14 @@ services:
     config:
       apiDir: src/api
 hooks:
+  preprovision:
+    windows:
+      shell: pwsh
+      run: node scripts/prepare-provision.mjs
+    posix:
+      shell: sh
+      run: node scripts/prepare-provision.mjs
+
   prepackage:
     windows:
       shell: pwsh

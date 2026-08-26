@@ -13,6 +13,14 @@ const commands = [
   "npm run db:seed"
 ];
 
+export function ensureEnvFile(projectDir = process.cwd()) {
+  const envPath = join(projectDir, '.env');
+
+  if (!existsSync(envPath)) {
+    copyFileSync(join(projectDir, '.env.example'), envPath);
+  }
+}
+
 export function ensureDockerEnvFile(projectDir = process.cwd()) {
   const dockerEnvPath = join(projectDir, '.env.docker');
 
@@ -26,6 +34,8 @@ export function getSetupCommands() {
 }
 
 export function runSetup() {
+  ensureEnvFile();
+
   ensureDockerEnvFile();
 
   for (const command of commands) {
